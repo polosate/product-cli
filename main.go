@@ -9,12 +9,11 @@ import (
 
 	"context"
 
+	"github.com/micro/go-micro"
 	pb "github.com/polosate/steaks/proto/product"
-	"google.golang.org/grpc"
 )
 
 const (
-	address         = "localhost:50051"
 	defaultFilename = "product.json"
 )
 
@@ -29,15 +28,11 @@ func parseFile(file string) (*pb.Product, error) {
 }
 
 func main() {
-	// Set up a connection to the server.
-	conn, err := grpc.Dial(address, grpc.WithInsecure())
-	if err != nil {
-		log.Fatalf("Did not connect: %v", err)
-	}
-	defer conn.Close()
-	client := pb.NewProductServiceClient(conn)
+	service := micro.NewService(micro.Name("steaks.cli.product"))
+	service.Init()
 
-	// Contact the server and print out its response.
+	client := pb.NewProductServiceClient("steaks.product.service", service.Client())
+
 	file := defaultFilename
 	if len(os.Args) > 1 {
 		file = os.Args[1]
@@ -51,8 +46,16 @@ func main() {
 
 	r, err := client.CreateProduct(context.Background(), product)
 	if err != nil {
-		log.Fatalf("Could not greet: %v", err)
+		log.Fatalf("Could not create a product: %v", err)
 	}
 	log.Printf("Created: %t", r.Created)
-}
 
+	getAll, err := client.GetProducts(context.Background(), &pb.GetRequest{})
+	if err != nil {
+		log.Fatalf("Could not list products: %v", err)
+	}
+	for _, v := range getAll.Products {
+		log.Println(v)
+	}
+
+}
