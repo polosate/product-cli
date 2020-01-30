@@ -1,4 +1,5 @@
 {
   "description": "General beef steak",
-  "name": "Steak"
+  "name": "Steak",
+  "amount": 1
 }
