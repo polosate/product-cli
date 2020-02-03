@@ -10,7 +10,7 @@ import (
 	"context"
 
 	"github.com/micro/go-micro"
-	pb "github.com/polosate/steaks/proto/product"
+	pb "github.com/polosate/product-service/proto/product"
 )
 
 const (
