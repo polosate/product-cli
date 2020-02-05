@@ -2,12 +2,11 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"log"
 	"os"
-
-	"context"
 
 	"github.com/micro/go-micro"
 	pb "github.com/polosate/product-service/proto/product"
@@ -27,7 +26,7 @@ func parseFile(file string) (*pb.Product, error) {
 	return product, err
 }
 
-func main() {
+func Run() {
 	service := micro.NewService(micro.Name("steaks.cli.product"))
 	service.Init()
 
@@ -45,6 +44,7 @@ func main() {
 	}
 
 	r, err := client.CreateProduct(context.Background(), product)
+
 	if err != nil {
 		log.Fatalf("Could not create a product: %v", err)
 	}
@@ -57,5 +57,8 @@ func main() {
 	for _, v := range getAll.Products {
 		log.Println(v)
 	}
+}
 
+func main() {
+	Run()
 }

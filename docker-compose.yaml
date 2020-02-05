@@ -1,0 +1,12 @@
+version: '3.5'
+
+services:
+  product-cli:
+    restart: always
+    container_name: "product-cli"
+    build: .
+
+networks:
+  default:
+    external:
+      name: steaks-backend-tier
